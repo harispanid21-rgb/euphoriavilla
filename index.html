@@ -37,7 +37,7 @@
 </head>
 <body>
 
-    <button onclick="toggleAdminPanel()" class="fixed bottom-6 left-6 bg-[#000080] text-white px-6 py-4 rounded-full z-[2001] shadow-2xl text-[10px] font-bold tracking-widest uppercase">ADMIN: MANAGE PRICES</button>
+    <button id="admin-trigger" onclick="toggleAdminPanel()" style="display:none" class="fixed bottom-6 left-6 bg-[#000080] text-white px-6 py-4 rounded-full z-[2001] shadow-2xl text-[10px] font-bold tracking-widest uppercase">ADMIN: MANAGE PRICES</button>
 
     <div id="admin-price-panel">
         <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -54,6 +54,17 @@
                 <p id="edit-date-label" class="text-[10px] text-gray-500 italic mb-2">Click a date on calendar</p>
                 <input type="number" id="single-day-field" class="w-full border p-2 text-xs" disabled oninput="changeDayOverride(this.value)">
             </div>
+        </div>
+    </div>
+
+    <!-- Admin login modal — shown when visiting #admin -->
+    <div id="admin-login-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:4000; align-items:center; justify-content:center;">
+        <div style="background:white; padding:40px; border-radius:8px; width:320px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <h3 style="font-family:'Playfair Display',serif; color:#000080; font-size:20px; margin-bottom:8px;">Admin Access</h3>
+            <p style="color:#999; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:24px;">Enter password to continue</p>
+            <input id="admin-pw-input" type="password" placeholder="Password" style="width:100%; border:1px solid #e5e7eb; padding:12px; border-radius:4px; font-size:14px; margin-bottom:10px; box-sizing:border-box; outline:none;">
+            <p id="admin-pw-error" style="color:#dc2626; font-size:11px; display:none; margin-bottom:10px;">Incorrect password. Try again.</p>
+            <button onclick="checkAdminPassword()" style="background:#000080; color:white; width:100%; padding:12px; border:none; border-radius:4px; cursor:pointer; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.15em;">Enter</button>
         </div>
     </div>
 
@@ -483,6 +494,42 @@
             });
         }
         window.onload = syncAvail;
+
+        // Admin access via #admin URL hash
+        const ADMIN_PASSWORD = 'euphoria2024';
+
+        function checkAdminPassword() {
+            const input = document.getElementById('admin-pw-input').value;
+            if (input === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminAuth', '1');
+                document.getElementById('admin-login-modal').style.display = 'none';
+                document.getElementById('admin-trigger').style.display = '';
+                history.replaceState(null, '', window.location.pathname);
+            } else {
+                document.getElementById('admin-pw-error').style.display = 'block';
+                document.getElementById('admin-pw-input').value = '';
+            }
+        }
+
+        function checkAdminHash() {
+            if (window.location.hash === '#admin') {
+                if (sessionStorage.getItem('adminAuth') === '1') {
+                    document.getElementById('admin-trigger').style.display = '';
+                    history.replaceState(null, '', window.location.pathname);
+                } else {
+                    const modal = document.getElementById('admin-login-modal');
+                    modal.style.display = 'flex';
+                    document.getElementById('admin-pw-input').focus();
+                }
+            }
+        }
+
+        document.getElementById('admin-pw-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkAdminPassword();
+        });
+
+        window.addEventListener('hashchange', checkAdminHash);
+        checkAdminHash();
     </script>
 </body>
 </html>
