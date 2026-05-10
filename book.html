@@ -10,36 +10,6 @@
 </head>
 <body>
 
-    <button id="admin-trigger" onclick="toggleAdminPanel()" style="display:none" class="fixed bottom-6 left-6 bg-[#000080] text-white px-6 py-4 rounded-full z-[2001] shadow-2xl text-[10px] font-bold tracking-widest uppercase">ADMIN: MANAGE PRICES</button>
-
-    <div id="admin-price-panel">
-        <div class="flex justify-between items-center mb-4 border-b pb-2">
-            <h4 class="text-[11px] font-black uppercase text-[#000080]">Price Setting</h4>
-            <button onclick="toggleAdminPanel()" class="text-red-500 font-bold">✕</button>
-        </div>
-        <div class="space-y-4">
-            <div>
-                <label class="text-[9px] font-black text-gray-400 uppercase">Default Rate (€)</label>
-                <input type="number" id="global-rate-field" class="w-full border p-2 text-xs mt-1" oninput="changeGlobalRate(this.value)">
-            </div>
-            <div class="pt-4 border-t">
-                <label class="text-[9px] font-black text-gray-400 uppercase">Single Day Rate (€)</label>
-                <p id="edit-date-label" class="text-[10px] text-gray-500 italic mb-2">Click a date on calendar</p>
-                <input type="number" id="single-day-field" class="w-full border p-2 text-xs" disabled oninput="changeDayOverride(this.value)">
-            </div>
-        </div>
-    </div>
-
-    <div id="admin-login-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:4000; align-items:center; justify-content:center;">
-        <div style="background:white; padding:40px; border-radius:8px; width:320px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-            <h3 style="font-family:'Playfair Display',serif; color:#000080; font-size:20px; margin-bottom:8px;">Admin Access</h3>
-            <p style="color:#999; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:24px;">Enter password to continue</p>
-            <input id="admin-pw-input" type="password" placeholder="Password" style="width:100%; border:1px solid #e5e7eb; padding:12px; border-radius:4px; font-size:14px; margin-bottom:10px; box-sizing:border-box; outline:none;">
-            <p id="admin-pw-error" style="color:#dc2626; font-size:11px; display:none; margin-bottom:10px;">Incorrect password. Try again.</p>
-            <button onclick="checkAdminPassword()" style="background:#000080; color:white; width:100%; padding:12px; border:none; border-radius:4px; cursor:pointer; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.15em;">Enter</button>
-        </div>
-    </div>
-
     <nav class="flex items-center justify-between px-6 lg:px-10 py-6 bg-white sticky top-0 z-50 border-b border-gray-100">
         <a href="index.html" class="text-2xl font-bold serif text-[#000080]">Eutopia Villa</a>
         <div class="hidden lg:flex space-x-10 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
@@ -68,95 +38,119 @@
         </div>
     </div>
 
-    <section class="py-24 bg-white text-left">
-        <div class="max-w-7xl mx-auto px-10">
-            <div class="mb-16">
-                <span class="section-label mb-4">Availability</span>
-                <h2 class="serif text-4xl text-[#000080] uppercase tracking-widest">Reserve Your Stay</h2>
-                <p class="text-[10px] font-bold text-[#A68966] mt-2 uppercase tracking-widest">* Minimum stay requirement: 3 nights</p>
+    <section class="py-16 lg:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10">
+
+            <div class="mb-12">
+                <span class="section-label mb-3">Availability</span>
+                <h1 class="serif text-4xl text-[#000080] uppercase tracking-widest">Reserve Your Stay</h1>
+                <p class="text-[11px] font-bold text-[#A68966] mt-2 uppercase tracking-widest">Minimum stay: 3 nights</p>
             </div>
 
-            <div class="grid lg:grid-cols-3 gap-12 text-left">
-                <div class="lg:col-span-2">
-                    <div class="bg-gray-50 p-8 border">
-                        <div class="flex justify-between items-center mb-8">
-                            <h3 id="current-month" class="font-bold uppercase tracking-widest text-gray-800">Month</h3>
-                            <div class="flex space-x-6 text-[10px] font-black text-gray-400">
-                                <span onclick="navMonth(-1)" class="cursor-pointer hover:text-black">PREV</span>
-                                <span onclick="navMonth(1)" class="cursor-pointer hover:text-black">NEXT</span>
-                            </div>
+            <div class="grid lg:grid-cols-5 gap-12">
+
+                <!-- Calendar -->
+                <div class="lg:col-span-3">
+                    <div class="bg-gray-50 border p-6 lg:p-8">
+
+                        <!-- Month nav -->
+                        <div class="flex justify-between items-center mb-6">
+                            <button onclick="navMonth(-1)" class="text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition">← Prev</button>
+                            <span id="cal-month" class="font-bold uppercase tracking-widest text-gray-800 text-sm"></span>
+                            <button onclick="navMonth(1)" class="text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition">Next →</button>
                         </div>
-                        <div id="calendar-grid" class="grid grid-cols-7 text-center"></div>
-                        <div id="total-box" class="mt-8 p-5 bg-[#000080] text-white text-center font-bold text-sm hidden">STAY TOTAL: €0</div>
+
+                        <!-- Day grid -->
+                        <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+
+                        <!-- Legend -->
+                        <div class="flex items-center gap-6 mt-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                            <span class="flex items-center gap-2"><span class="inline-block w-3 h-3 bg-[#f5f5f5] border border-gray-200"></span>Unavailable</span>
+                            <span class="flex items-center gap-2"><span class="inline-block w-3 h-3 bg-[#A68966]"></span>Selected</span>
+                        </div>
+
+                        <!-- Stay summary -->
+                        <div id="stay-summary" class="hidden mt-6 p-4 text-center text-sm font-bold text-white bg-[#000080]"></div>
+                    </div>
+
+                    <!-- Selected dates display -->
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="bg-white border p-4">
+                            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1">Arrival</p>
+                            <p id="arrival-display" class="text-sm font-bold text-[#000080]">—</p>
+                        </div>
+                        <div class="bg-white border p-4">
+                            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1">Departure</p>
+                            <p id="departure-display" class="text-sm font-bold text-[#000080]">—</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-8 border shadow-2xl">
-                    <h3 class="serif text-2xl mb-8 border-b pb-4 text-[#000080]">Booking Inquiry</h3>
-                    <!-- TODO: replace YOUR_ID with your actual Formspree form ID -->
-                    <form id="booking-form" action="https://formspree.io/f/YOUR_ID" method="POST" class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="text" name="Arrival" id="in-display" readonly placeholder="Arrival" class="form-input bg-gray-50 font-bold text-xs">
-                            <input type="text" name="Departure" id="out-display" readonly placeholder="Departure" class="form-input bg-gray-50 font-bold text-xs">
-                        </div>
-                        <input type="hidden" name="Price_Total" id="price-hidden">
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="text" name="Name" placeholder="Full Name *" required class="form-input">
-                            <input type="text" name="Phone" placeholder="Phone Number *" required class="form-input">
-                        </div>
-                        <input type="email" name="Email" placeholder="Email Address *" required class="form-input">
-                        <label class="text-[10px] font-bold uppercase text-gray-400">Number of Guests</label>
-                        <select name="Guests" class="form-input">
-                            <option>1 Guest</option>
-                            <option>2 Guests</option>
-                            <option>3 Guests</option>
-                            <option>4 Guests</option>
-                            <option>5 Guests</option>
-                            <option>6 Guests</option>
-                        </select>
-                        <textarea name="Message" placeholder="Questions or Special Requests" class="form-input h-24 resize-none"></textarea>
-                        <div class="flex items-start space-x-3 py-2">
-                            <input type="checkbox" id="terms-check" required class="mt-1" onchange="updateTotalQuote()">
-                            <label for="terms-check" class="text-[11px] text-gray-500 leading-tight">
-                                I accept to agree to the <a href="javascript:void(0)" onclick="openTerms()" class="text-[#A68966] underline">Terms & Conditions</a>
-                            </label>
-                        </div>
-                        <button type="submit" id="submit-btn" disabled class="w-full bg-[#000080] text-white py-5 font-black uppercase text-[11px] tracking-widest shadow-lg opacity-50 cursor-not-allowed">Submit Request</button>
-                    </form>
+                <!-- Booking form -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white border shadow-xl p-8 h-full">
+                        <h2 class="serif text-2xl text-[#000080] mb-8 pb-4 border-b">Booking Inquiry</h2>
+
+                        <form id="booking-form" onsubmit="handleSubmit(event)" class="space-y-4">
+                            <!-- Web3Forms config -->
+                            <!-- TODO: replace with your Web3Forms access key from web3forms.com -->
+                            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY">
+                            <input type="hidden" name="subject" value="Booking Inquiry — Eutopia Villa">
+                            <input type="hidden" name="from_name" value="Eutopia Villa Website">
+                            <input type="hidden" name="Arrival" id="arrival-hidden">
+                            <input type="hidden" name="Departure" id="departure-hidden">
+                            <input type="checkbox" name="botcheck" style="display:none">
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-1">First Name *</label>
+                                    <input type="text" name="First Name" required class="form-input">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-1">Last Name *</label>
+                                    <input type="text" name="Last Name" required class="form-input">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-1">Email *</label>
+                                <input type="email" name="Email" required class="form-input">
+                            </div>
+
+                            <div>
+                                <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-1">Number of Guests *</label>
+                                <select name="Guests" required class="form-input">
+                                    <option value="">Select</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-1">Message</label>
+                                <textarea name="Message" rows="4" placeholder="Special requests, questions…" class="form-input resize-none"></textarea>
+                            </div>
+
+                            <p id="form-error" class="hidden text-red-500 text-xs">Something went wrong. Please try again.</p>
+
+                            <button type="submit" id="submit-btn" disabled
+                                class="w-full bg-[#000080] text-white py-4 font-black uppercase text-[11px] tracking-widest disabled:opacity-40 disabled:cursor-not-allowed transition hover:bg-black">
+                                Select Dates First
+                            </button>
+                            <p class="text-[10px] text-gray-400 text-center">Select your dates on the calendar first</p>
+                        </form>
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
 
     <footer class="py-20 text-center border-t text-[10px] text-gray-400 uppercase tracking-widest">© 2026 Eutopia Villa Lagonisi</footer>
-
-    <div id="termsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header flex justify-between items-center">
-                <h2 class="serif text-2xl text-[#000080]">Terms & Conditions</h2>
-                <button onclick="closeTerms()" class="text-2xl text-gray-400 hover:text-black">×</button>
-            </div>
-            <div class="space-y-6 text-sm text-gray-600 leading-relaxed">
-                <div>
-                    <h4 class="font-bold text-[#A68966] uppercase mb-2">Full Cancellation Policy</h4>
-                    <p>Full refund for cancellations made within 48 hours of booking, if the check-in date is at least 14 days away. 50% refund for cancellations made at least 7 days before check-in. No refunds for cancellations made within 7 days of check-in.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-[#A68966] uppercase mb-2">Minimum Stay Rules</h4>
-                    <p>A minimum stay of 3 nights is required for all seasons. During peak summer months (July-August), a 5-night minimum may apply.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-[#A68966] uppercase mb-2">House Rules</h4>
-                    <p>No smoking inside the villa. No parties or events. Quiet hours from 23:00 to 08:00. Maximum occupancy of 6 guests must be respected.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-[#A68966] uppercase mb-2">Payment Terms</h4>
-                    <p>A 30% deposit is required via bank transfer to secure the booking. The remaining balance is due 14 days prior to arrival. Security deposit of €500 is required upon check-in (fully refundable).</p>
-                </div>
-            </div>
-            <button onclick="closeTerms()" class="w-full mt-8 bg-[#000080] text-white py-3 text-[10px] font-bold uppercase tracking-widest">Close</button>
-        </div>
-    </div>
 
     <script src="js/main.js"></script>
     <script src="js/book.js"></script>
