@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <nav class="flex items-center justify-between px-10 py-6 bg-white sticky top-0 z-50 border-b border-gray-100">
+    <nav class="flex items-center justify-between px-6 lg:px-10 py-6 bg-white sticky top-0 z-50 border-b border-gray-100">
         <div class="text-2xl font-bold serif text-[#000080]">Eutopia Villa</div>
         <div class="hidden lg:flex space-x-10 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 text-left">
             <a href="#about">The Villa</a>
@@ -76,8 +76,25 @@
             <a href="#services">Facilities & Services</a>
             <a href="#location">Location</a>
         </div>
-        <a href="#reservation" class="px-8 py-3 bg-[#A68966] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-black transition">Book Now</a>
+        <div class="flex items-center space-x-4">
+            <button id="menu-btn" onclick="toggleMobileMenu()" class="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5" aria-label="Menu">
+                <span class="block w-6 h-0.5 bg-[#000080] transition-all duration-200"></span>
+                <span class="block w-6 h-0.5 bg-[#000080] transition-all duration-200"></span>
+                <span class="block w-6 h-0.5 bg-[#000080] transition-all duration-200"></span>
+            </button>
+            <a href="#reservation" class="px-8 py-3 bg-[#A68966] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-black transition">Book Now</a>
+        </div>
     </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" style="display:none" class="lg:hidden bg-white border-b border-gray-100 px-6 pb-6 sticky top-[73px] z-40">
+        <div class="flex flex-col space-y-5 pt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
+            <a href="#about" onclick="closeMobileMenu()">The Villa</a>
+            <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+            <a href="#services" onclick="closeMobileMenu()">Facilities & Services</a>
+            <a href="#location" onclick="closeMobileMenu()">Location</a>
+        </div>
+    </div>
 
     <div class="mx-6 mt-4 h-[75vh] bg-[#1a1a1a] overflow-hidden rounded-sm relative flex items-center justify-end">
         <img src="MAIN PHOTO.jpg" alt="Eutopia Villa" class="w-full h-full object-cover absolute inset-0 opacity-80">
@@ -221,6 +238,7 @@
 
                 <div class="bg-white p-8 border shadow-2xl">
                     <h3 class="serif text-2xl mb-8 border-b pb-4 text-[#000080]">Booking Inquiry</h3>
+                    <!-- TODO: replace YOUR_ID with your actual Formspree form ID -->
                     <form id="booking-form" action="https://formspree.io/f/YOUR_ID" method="POST" class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <input type="text" name="Arrival" id="in-display" readonly placeholder="Arrival" class="form-input bg-gray-50 font-bold text-xs">
@@ -302,8 +320,15 @@
     </div>
 
     <script>
+        // NOTE: iCal tokens are inherently visible in a static site's source.
+        // To fully hide them, proxy the feeds server-side (e.g. a Netlify/Vercel function).
+        const ICAL_FEEDS = [
+            'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
+            'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08'
+        ];
+
         let globalRate = 200;
-        let dayOverrides = {}; 
+        let dayOverrides = {};
         let bookedSet = new Set();
         let calDate = new Date();
         let selection = [];
@@ -313,6 +338,12 @@
 
         function openTerms() { document.getElementById('termsModal').style.display = 'block'; }
         function closeTerms() { document.getElementById('termsModal').style.display = 'none'; }
+
+        function toggleMobileMenu() {
+            const m = document.getElementById('mobile-menu');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
+        function closeMobileMenu() { document.getElementById('mobile-menu').style.display = 'none'; }
 
         function toggleAdminPanel() { 
             const p = document.getElementById('admin-price-panel'); 
@@ -328,10 +359,7 @@
                 'https://api.allorigins.win/raw?url='
             ];
             
-            const feeds = [
-                'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
-                'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08'
-            ];
+            const feeds = ICAL_FEEDS;
             
             bookedSet.clear();
 
@@ -495,12 +523,15 @@
         }
         window.onload = syncAvail;
 
-        // Admin access via #admin URL hash
-        const ADMIN_PASSWORD = 'euphoria2024';
+        // Admin access via #admin URL hash — password stored as SHA-256 hash only
+        const ADMIN_HASH = '79f353d95cdeb42fb46b7966e4eb725dd41ffa917f2414d6e0e139b20b6fd1bf';
 
-        function checkAdminPassword() {
+        async function checkAdminPassword() {
             const input = document.getElementById('admin-pw-input').value;
-            if (input === ADMIN_PASSWORD) {
+            const encoded = new TextEncoder().encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', encoded);
+            const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+            if (hashHex === ADMIN_HASH) {
                 sessionStorage.setItem('adminAuth', '1');
                 document.getElementById('admin-login-modal').style.display = 'none';
                 document.getElementById('admin-trigger').style.display = '';
