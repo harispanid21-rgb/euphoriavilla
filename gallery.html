@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | Eutopia Villa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav class="flex items-center justify-between px-6 lg:px-10 py-6 bg-white sticky top-0 z-50 border-b border-gray-100">
+        <a href="index.html" class="text-2xl font-bold serif text-[#000080]">Eutopia Villa</a>
+        <div class="hidden lg:flex space-x-10 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
+            <a href="index.html">The Villa</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="index.html#services">Facilities & Services</a>
+            <a href="location.html">Location</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button onclick="toggleMobileMenu()" class="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5" aria-label="Menu">
+                <span class="block w-6 h-0.5 bg-[#000080]"></span>
+                <span class="block w-6 h-0.5 bg-[#000080]"></span>
+                <span class="block w-6 h-0.5 bg-[#000080]"></span>
+            </button>
+            <a href="book.html" class="px-8 py-3 bg-[#A68966] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-black transition">Book Now</a>
+        </div>
+    </nav>
+
+    <div id="mobile-menu" style="display:none" class="lg:hidden bg-white border-b border-gray-100 px-6 pb-6 sticky top-[73px] z-40">
+        <div class="flex flex-col space-y-5 pt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
+            <a href="index.html" onclick="closeMobileMenu()">The Villa</a>
+            <a href="gallery.html" onclick="closeMobileMenu()">Gallery</a>
+            <a href="index.html#services" onclick="closeMobileMenu()">Facilities & Services</a>
+            <a href="location.html" onclick="closeMobileMenu()">Location</a>
+            <a href="book.html" onclick="closeMobileMenu()">Book Now</a>
+        </div>
+    </div>
+
+    <section class="py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto px-10">
+            <div class="mb-16 text-left">
+                <span class="section-label mb-4">Interior & Exterior</span>
+                <h2 class="serif text-4xl text-[#000080] uppercase tracking-widest">The Residence</h2>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-12">
+                <button onclick="filterGal('all', this)" class="gal-nav active">ALL SPACES</button>
+                <button onclick="filterGal('exterior', this)" class="gal-nav">POOL & GARDEN</button>
+                <button onclick="filterGal('kitchen', this)" class="gal-nav">KITCHEN</button>
+                <button onclick="filterGal('living', this)" class="gal-nav">LIVING & DINING</button>
+                <button onclick="filterGal('bedroom1', this)" class="gal-nav">BEDROOM 1</button>
+                <button onclick="filterGal('bedroom2', this)" class="gal-nav">BEDROOM 2</button>
+                <button onclick="filterGal('bedroom3', this)" class="gal-nav">BEDROOM 3</button>
+                <button onclick="filterGal('ensuite', this)" class="gal-nav">EN-SUITE</button>
+                <button onclick="filterGal('office', this)" class="gal-nav">OFFICE SPACE</button>
+                <button onclick="filterGal('bathroom2', this)" class="gal-nav">BATHROOM 2</button>
+                <button onclick="filterGal('wc', this)" class="gal-nav">GUEST WC</button>
+            </div>
+
+            <div id="gal-grid" class="lg:w-3/4 mx-auto space-y-10">
+                <div class="gal-item exterior"><img src="images/exterior/grdn1.jpg" alt="Garden"></div>
+                <div class="gal-item exterior"><img src="images/exterior/grdn2.jpg" alt="Garden"></div>
+                <div class="gal-item exterior"><img src="images/exterior/grdn3.jpg" alt="Garden"></div>
+                <div class="gal-item kitchen"><img src="images/kitchen/view.jpg" alt="Kitchen"></div>
+                <div class="gal-item kitchen"><img src="images/kitchen/detail.jpg" alt="Kitchen"></div>
+                <div class="gal-item kitchen"><img src="images/kitchen/island.jpg" alt="Kitchen Island"></div>
+                <div class="gal-item living"><img src="images/living/wide.jpg" alt="Living Room"></div>
+                <div class="gal-item living"><img src="images/living/dining.jpg" alt="Dining Room"></div>
+                <div class="gal-item living"><img src="images/living/lounge.jpg" alt="Lounge"></div>
+                <div class="gal-item living"><img src="images/living/stairs.jpg" alt="Stairs"></div>
+                <div class="gal-item bedroom1"><img src="images/bedroom1/master.jpg" alt="Master Bedroom"></div>
+                <div class="gal-item bedroom1"><img src="images/bedroom1/wide.jpg" alt="Bedroom 1"></div>
+                <div class="gal-item bedroom1"><img src="images/bedroom1/tv.jpg" alt="Bedroom 1 TV"></div>
+                <div class="gal-item bedroom1"><img src="images/bedroom1/window.jpg" alt="Bedroom 1 Window"></div>
+                <div class="gal-item bedroom2"><img src="images/bedroom2/wide.jpg" alt="Bedroom 2"></div>
+                <div class="gal-item bedroom2"><img src="images/bedroom2/corner.jpg" alt="Bedroom 2 Corner"></div>
+                <div class="gal-item bedroom2"><img src="images/bedroom2/door.jpg" alt="Bedroom 2 Door"></div>
+                <div class="gal-item bedroom2"><img src="images/bedroom2/flower.jpg" alt="Bedroom 2"></div>
+                <div class="gal-item bedroom3"><img src="images/bedroom3/wide.jpg" alt="Bedroom 3"></div>
+                <div class="gal-item bedroom3"><img src="images/bedroom3/door.jpg" alt="Bedroom 3 Door"></div>
+                <div class="gal-item bedroom3"><img src="images/bedroom3/window.jpg" alt="Bedroom 3 Window"></div>
+                <div class="gal-item ensuite"><img src="images/bathroom/ensuite-wide.jpg" alt="En-Suite"></div>
+                <div class="gal-item ensuite"><img src="images/bathroom/ensuite-mirror.jpg" alt="En-Suite Mirror"></div>
+                <div class="gal-item office"><img src="images/outdoor/office.jpg" alt="Office Space"></div>
+                <div class="gal-item bathroom2"><img src="images/bathroom/bath2-wide.jpg" alt="Bathroom 2"></div>
+                <div class="gal-item bathroom2"><img src="images/bathroom/bath2-shower.jpg" alt="Bathroom 2 Shower"></div>
+                <div class="gal-item wc"><img src="images/bathroom/wc.jpg" alt="Guest WC"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-20 text-center border-t text-[10px] text-gray-400 uppercase tracking-widest">© 2026 Eutopia Villa Lagonisi</footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        function filterGal(cat, btn) {
+            document.querySelectorAll('.gal-nav').forEach(n => n.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.gal-item').forEach(i => {
+                i.style.display = (cat === 'all' || i.classList.contains(cat)) ? 'block' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
