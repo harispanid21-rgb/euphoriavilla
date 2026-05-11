@@ -19,28 +19,81 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 
 function dateKey(y, m, d) { return `${y}-${m}-${d}`; }
 
-// Availability comes from data/availability.json (written by GitHub Action — no CORS proxy needed)
+const AVAILABILITY_FEEDS = [
+    'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
+    'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08',
+];
+
+function addBlocked(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    bookedSet.add(dateKey(y, m - 1, d));
+}
+
+function parseBlockedIcal(ics) {
+    const dates = [];
+    ics.split('BEGIN:VEVENT').slice(1).forEach(chunk => {
+        const sM = chunk.match(/DTSTART(?:;VALUE=DATE)?(?:;TZID=[^:]+)?:(\d{8})/);
+        const eM = chunk.match(/DTEND(?:;VALUE=DATE)?(?:;TZID=[^:]+)?:(\d{8})/);
+        if (!sM || !eM) return;
+        let curr = toUTC(sM[1]);
+        const stop = toUTC(eM[1]);
+        while (curr < stop) {
+            const y = curr.getUTCFullYear(), m = curr.getUTCMonth(), d = curr.getUTCDate();
+            dates.push(`${y}-${String(m + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+            curr.setUTCDate(d + 1);
+        }
+    });
+    return dates;
+}
+
+async function fetchProxy(url) {
+    for (const proxy of PROXIES) {
+        try {
+            const r = await fetch(proxy + encodeURIComponent(url + '&nocache=' + Date.now()));
+            if (!r.ok) continue;
+            const text = await r.text();
+            if (text && text.length > 100) return text;
+        } catch {}
+    }
+    return null;
+}
+
+// Availability: load cached JSON immediately, then try live fetch in background
 async function loadAvailability() {
     const status = document.getElementById('sync-status');
+
+    // 1. Load cached JSON (fast, same-origin, always works)
+    let cachedAt = null;
     try {
         const r = await fetch(`data/availability.json?nocache=${Date.now()}`);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const data = await r.json();
-
-        data.blocked.forEach(iso => {
-            const [y, m, d] = iso.split('-').map(Number);
-            bookedSet.add(dateKey(y, m - 1, d));
-        });
-
-        if (data.updated && data.updated !== '1970-01-01T00:00:00+00:00') {
-            const ago = timeSince(new Date(data.updated));
-            status.innerHTML = `<span class="text-green-600">✓ Availability synced ${ago}</span>`;
-        } else {
-            status.innerHTML = `<span class="text-amber-500">⚠ Availability not yet synced — run the GitHub Action once</span>`;
+        if (r.ok) {
+            const data = await r.json();
+            data.blocked.forEach(addBlocked);
+            if (data.updated && data.updated !== '1970-01-01T00:00:00+00:00') {
+                cachedAt = new Date(data.updated);
+                status.innerHTML = `<span class="text-amber-500">↻ Checking live availability…</span>`;
+            } else {
+                status.innerHTML = `<span class="text-amber-500">⚠ Not yet synced — trigger the GitHub Action once</span>`;
+            }
+            drawCal();
         }
-    } catch (e) {
-        console.error('Availability load failed:', e);
-        status.innerHTML = `<span class="text-red-500">✗ Could not load availability</span>`;
+    } catch {}
+
+    // 2. Try live fetch via CORS proxy in background — update if it works
+    const liveResults = await Promise.all(AVAILABILITY_FEEDS.map(fetchProxy));
+    const anyLive = liveResults.some(Boolean);
+
+    if (anyLive) {
+        bookedSet.clear();
+        liveResults.forEach(ics => {
+            if (ics) parseBlockedIcal(ics).forEach(addBlocked);
+        });
+        status.innerHTML = `<span class="text-green-600">✓ Live availability loaded</span>`;
+        drawCal();
+    } else if (cachedAt) {
+        status.innerHTML = `<span class="text-green-600">✓ Availability synced ${timeSince(cachedAt)}</span>`;
+    } else {
+        status.innerHTML = `<span class="text-red-500">✗ Could not load availability — please refresh</span>`;
     }
 }
 
