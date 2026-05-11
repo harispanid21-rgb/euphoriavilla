@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /booktest.html
+
+Sitemap: https://eutopiavilla.gr/sitemap.xml
