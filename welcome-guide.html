@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eutopia Villa Guide</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f6f0e8;color:#171513;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding-bottom:76px}button{font:inherit}.serif{font-family:Georgia,"Times New Roman",serif}.screen{display:none}.screen.active{display:block}
+.hero{position:relative;height:420px;overflow:hidden;background:#111}.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.08),rgba(0,0,0,.48))}
+.logo{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px 16px 24px;color:white}.logo h1{font-size:52px;letter-spacing:.10em;margin:0;font-weight:400;line-height:.92;text-shadow:0 5px 20px rgba(0,0,0,.35)}.villa{margin-top:12px;font-size:21px;letter-spacing:.35em}.welcome{margin-top:14px;color:#e0b36f;font-size:42px;font-style:italic}.logo p{margin:10px auto 0;max-width:330px;line-height:1.42;font-size:15px;text-shadow:0 3px 14px rgba(0,0,0,.45)}
+.menu,.lang{position:absolute;z-index:5;top:18px;background:rgba(251,246,239,.95);border:1px solid rgba(255,255,255,.55);box-shadow:0 10px 28px rgba(0,0,0,.18)}.menu{left:16px;width:68px;height:76px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.menu i{display:block;width:30px;height:2px;background:#171513;margin:3px 0;border-radius:8px}.menu span{font-size:11px;text-transform:uppercase;letter-spacing:.08em}.lang{right:14px;border-radius:999px;padding:11px 14px;display:flex;gap:10px;align-items:center;font-size:15px}.lang b{width:1px;height:20px;background:#bfa98d}
+.home-content{position:relative;z-index:3;margin:-34px 10px 24px}.panel{background:rgba(251,246,239,.98);border-radius:28px;padding:13px;box-shadow:0 16px 40px rgba(0,0,0,.12)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fffdfa;border:1px solid #eadfd1;border-radius:20px;min-height:140px;padding:15px 12px;position:relative;box-shadow:0 6px 18px rgba(0,0,0,.045);text-align:left;width:100%;cursor:pointer;color:inherit}.icon{font-size:36px;color:#a8753d;margin-bottom:12px}.card h2{font-family:Georgia,"Times New Roman",serif;text-transform:uppercase;letter-spacing:.055em;font-size:16.5px;line-height:1.14;margin:0;font-weight:500}.card p{font-size:12.5px;line-height:1.35;color:#5b554e;margin:8px 32px 0 0}.arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:#f3ece3;color:#a8753d;display:flex;align-items:center;justify-content:center;font-size:28px}
+.topbar{height:64px;background:#fffdfa;border-bottom:1px solid #eadfd1;display:flex;align-items:center;justify-content:center;position:sticky;top:0;z-index:10}.topbar h1{font-family:Georgia,"Times New Roman",serif;text-transform:uppercase;letter-spacing:.06em;font-size:21px;margin:0;text-align:center;max-width:72%;line-height:1.05}.back,.heart{position:absolute;top:0;height:64px;border:0;background:transparent;font-size:32px;color:#171513}.back{left:8px}.heart{right:14px;color:#a8753d}
+.page{padding:22px 16px 28px;max-width:760px;margin:auto}.intro{font-size:17px;line-height:1.5;color:#37322e;margin:0 0 22px}.list-card{width:100%;min-height:86px;border:1px solid #eadfd1;background:rgba(255,255,255,.88);border-radius:18px;margin-bottom:12px;padding:16px;display:flex;align-items:center;gap:16px;text-align:left;box-shadow:0 8px 24px rgba(82,57,31,.07);cursor:pointer;color:inherit}.list-icon{font-size:34px;color:#a8753d;width:42px;text-align:center;flex:none}.list-card h2{font-size:17px;margin:0;font-weight:700}.list-card p{font-size:13.5px;margin:5px 0 0;color:#5b554e;line-height:1.35}.list-arrow{margin-left:auto;color:#a8753d;font-size:30px}
+.info-card{background:rgba(255,255,255,.88);border:1px solid #eadfd1;border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 8px 24px rgba(82,57,31,.07)}.info-card h3{font-family:Georgia,"Times New Roman",serif;text-transform:uppercase;letter-spacing:.055em;font-size:19px;margin:0 0 10px}.info-card li{font-size:15.5px;line-height:1.55;color:#37322e;margin:4px 0}.info-card ul{margin:0;padding-left:20px}.info-card a{color:#a8753d;font-weight:700;text-decoration:underline}.gold-btn{border:0;width:100%;border-radius:14px;padding:15px;background:linear-gradient(135deg,#c89b50,#a87632);color:white;font-weight:700;font-size:16px;margin-top:16px;cursor:pointer}.bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,251,245,.97);border-top:1px solid #eadfd1;padding-bottom:env(safe-area-inset-bottom)}.bottom-inner{height:72px;display:grid;grid-template-columns:repeat(4,1fr);max-width:760px;margin:auto}.nav{border:0;background:transparent;color:#555;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;text-align:center;padding:9px 0}.nav.active{color:#a8753d;font-weight:700}@media(min-width:700px){body{max-width:430px;margin:0 auto;box-shadow:0 20px 80px rgba(0,0,0,.18)}}
+
+button,.card,.list-card{touch-action:manipulation;-webkit-tap-highlight-color:rgba(168,117,61,.18)}
+a{touch-action:manipulation}
+</style></head>
+<body>
+<div id="home" class="screen active"><section class="hero"><img src="data:image/jpeg;base64,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" alt="Eutopia Villa"><div class="logo"><h1 class="serif">EUTOPIA</h1><div class="villa">VILLA</div><div class="welcome serif">Welcome</div><p>This guide helps you settle in quickly and enjoy everything the house & area have to offer.</p></div></section><main class="home-content"><div class="panel"><div class="grid" id="homeGrid">
+<button type="button" class="card" onclick="openCategory('essentials')"><div class="icon">⌂</div><h2>House Essentials</h2><p>Wi‑Fi, entry & access, contacts & checkout</p><div class="arrow">›</div></button>
+<button type="button" class="card" onclick="openCategory('help')"><div class="icon">☏</div><h2>Need Immediate Help?</h2><p>Tap to call or message us</p><div class="arrow">›</div></button>
+<button type="button" class="card" onclick="openCategory('comfort')"><div class="icon">⌘</div><h2>Comfort & Amenities</h2><p>Kitchen basics, bathroom, laundry & more</p><div class="arrow">›</div></button>
+<button type="button" class="card" onclick="openCategory('safety')"><div class="icon">⛨</div><h2>Safety & Help</h2><p>Safety info & emergency contacts</p><div class="arrow">›</div></button>
+<button type="button" class="card" onclick="openCategory('local')"><div class="icon">⌖</div><h2>Local Guide</h2><p>Nearby shops, restaurants & experiences</p><div class="arrow">›</div></button>
+<button type="button" class="card" onclick="openDetail('house-rules','home')"><div class="icon">☰</div><h2>House Rules</h2><p>Rules, guest guide & before checkout</p><div class="arrow">›</div></button>
+</div></div></main></div>
+<div id="category" class="screen"><header class="topbar"><button type="button" class="back" type="button" onclick="goHome()">‹</button><h1 id="catTitle"></h1><button type="button" class="heart" type="button">♡</button></header><main class="page"><p id="catIntro" class="intro"></p><div id="catList"></div><button type="button" class="gold-btn" type="button" onclick="goHome()">⌂ Back to Home</button></main></div>
+<div id="detail" class="screen"><header class="topbar"><button type="button" class="back" type="button" onclick="backToCat()">‹</button><h1 id="detTitle"></h1><button type="button" class="heart" type="button">♡</button></header><main class="page"><p id="detIntro" class="intro"></p><div id="detBlocks"></div><button type="button" class="gold-btn" type="button" onclick="backToCat()">⌂ Back</button></main></div>
+<nav class="bottom"><div class="bottom-inner"><button type="button" class="nav active" type="button" onclick="goHome()">⌂<br>Home</button><button type="button" class="nav" onclick="openAboutVilla()">ⓘ<br>About Villa</button></div></nav>
+<script>
+(function(){
+  var currentCategory = null;
+  function byId(id){ return document.getElementById(id); }
+  function show(id){
+    var screens = document.getElementsByClassName('screen');
+    for(var i=0;i<screens.length;i++){ screens[i].className='screen'; }
+    var target = byId(id);
+    if(target){ target.className='screen active'; }
+    window.scrollTo(0,0);
+  }
+  function safe(s){
+    return String(s).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function linkItem(x){
+    if(typeof x === 'object' && x.href){
+      return '<a href="'+x.href+'" target="_blank" rel="noopener">'+safe(x.text)+'</a>';
+    }
+    return safe(x);
+  }
+
+  var categories = {
+    essentials:{title:'House Essentials',intro:'Everything you need to know for a smooth and hassle-free stay.',items:[
+      ['wifi','≋','Wi‑Fi','Network details & password'],
+      ['entry','⚿','Entry & Access','How to enter & use the keys'],
+      ['contacts','◎','Contacts','Important contacts & numbers'],
+      ['garage','▤','Garage Doors','How to open the garage doors']
+    ]},
+    help:{title:'Need Immediate Help?',intro:'Contact us anytime during your stay.',items:[
+      ['contacts','☏','Call Tony / Silia','Host and co-host contacts'],
+      ['emergency','+','Emergency Numbers','Police, ambulance and fire department']
+    ]},
+    comfort:{title:'Comfort & Amenities',intro:'Everything you need for comfortable everyday use inside the villa.',items:[
+      ['lights','☼','Lights','Indoor and outdoor lighting instructions'],
+      ['tv','▭','Smart TV & Music','Streaming, live TV and Bluetooth'],
+      ['hotwater','♢','Hot Water','Solar water heater and boiler switch'],
+      ['ac','❄','Heating / Air‑Conditioning','Cooling and heating instructions'],
+      ['kitchen','♧','Kitchen Essentials','Cooking, coffee, dishwasher and waste'],
+      ['bathroom','◡','Bathroom Basics','Bathroom essentials and window note'],
+      ['laundry','▣','Laundry','Washing machine, detergent and drying']
+    ]},
+    safety:{title:'Safety & Help',intro:'Important safety information and emergency assistance during your stay.',items:[
+      ['safety-main','⛨','First Aid & Safety','Safety kit, fire safety and electrical panel'],
+      ['emergency','+','Emergency Contacts','Host, co-host and emergency numbers']
+    ]},
+    local:{title:'Local Guide',intro:'Useful nearby shops and curated local experiences around Lagonisi.',items:[
+      ['shops','⌖','Supermarkets & Markets','Walking and short-drive options'],
+      ['experience','✧','Guest Experience Guide','Full Lagonisi experience guide']
+    ]}
+  };
+
+  function maps(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
+
+  var details = {
+    wifi:{title:'Wi‑Fi',intro:'Stay connected during your stay.',blocks:[['Network',['[Add Wi‑Fi network name]']],['Password',['[Add Wi‑Fi password]']]]},
+    entry:{title:'Entry & Access',intro:'Everything you need for entering and using the villa comfortably.',blocks:[
+      ['Main Entrance',['Use the card or alternatively the key.']],
+      ['Garage Doors',['Press A or B on the control according to the letters shown on the garage doors.']],
+      ['Access Notes',['Please always close the garage doors after entering or exiting.','Keep the access card with you during your stay.','In case of lost key/card please contact the Villa Host immediately.']]
+    ]},
+    contacts:{title:'Contacts',intro:'Important contacts for a worry-free stay.',blocks:[
+      ['Villa Host',[{text:'Tony — +30 6983524100',href:'tel:+306983524100'}]],
+      ['Co‑Host / Manager',[{text:'Silia — +30 6951638967',href:'tel:+306951638967'}]],
+      ['Emergency',[{text:'European Emergency Number: 112',href:'tel:112'}]]
+    ]},
+    garage:{title:'Garage Doors',intro:'How to use the garage doors.',blocks:[['Garage Doors',['Press A or B on the control according to the letters shown on the garage doors.']]]},
+    lights:{title:'Lights',intro:'Indoor and outdoor lighting instructions for a comfortable stay.',blocks:[
+      ['Main Living Area',['The main lighting switches are located next to the villa entrance.','Additional ambient lighting is controlled from the living room side panels.']],
+      ['Ceiling LED',['The ceiling LED supports dimming with the remote control.']],
+      ['Garden & Pool Lights',['All garden and pool lights turn ON and OFF automatically.']],
+      ['Manual Garden / Pool Control',['If manual control is needed, the switch is the third one below the switch panel located to the left of the guest WC on the ground floor.']],
+      ['Terrace LED & Exterior Spotlights',['Terrace LED lights and exterior house spotlights are controlled from the same switch panel, located in the dining room, to the right of the entrance.']]
+    ]},
+    tv:{title:'Smart TV & Music',intro:'Watch TV, stream your favorite apps and enjoy music throughout your stay.',blocks:[
+      ['Watch TV',['Press Home on the remote.','Open Live TV.','Change channels using CH + / −.','Use VOL + / − for volume.']],
+      ['Streaming Apps',['Netflix','YouTube','ERTFLIX']],
+      ['Bluetooth Speaker / Amplifier',['Turn power on: Master ON, Main Zone ON.','Check for input: CD.','Enable Bluetooth on your phone and select C52.']]
+    ]},
+    hotwater:{title:'Hot Water',intro:'The villa uses a solar water heater for daily hot water.',blocks:[
+      ['Hot Water System',['Hot water type: solar water heater.','Available 24/7 depending on solar heating conditions.']],
+      ['Boiler Switch',['Turn ON switch number 30 in the electrical panel, located in the cabinet to the left of the main entrance.','Check that indicator light number 31 is ON.','Wait approximately 15 minutes for hot water.']],
+      ['Warning',['Before using the shower, turn OFF switch number 30.','Check that indicator light 31 is OFF.','Please do not leave the boiler ON continuously.']]
+    ]},
+    ac:{title:'Heating / Air‑Conditioning',intro:'Heating and cooling instructions for a comfortable stay.',blocks:[
+      ['Using The AC',['Use the remote control provided in each room.','Press ON/OFF to start the unit.']],
+      ['Cooling Mode',['Select COOL mode (snowflake symbol). Recommended temperature: 24–26°C.']],
+      ['Heating Mode',['Select HEAT mode (sun symbol). Recommended temperature: 20–22°C.']],
+      ['Energy Saving',['Please keep doors and windows closed while the AC is operating.','Turn OFF AC units when leaving the villa.']]
+    ]},
+    kitchen:{title:'Kitchen Essentials',intro:'Everything you need for cooking, coffee and everyday kitchen use.',blocks:[
+      ['Coffee & Tea',['Fill the water tank from the top.','Insert capsule and close the handle firmly.','Press the small or large cup button.']],
+      ['Stove',['Touch controls are located at the front center.','Press ON before selecting a cooking zone.','Adjust heat using + / − controls.','BOOST activates the outer ring on the front-right cooking zone.']],
+      ['Oven',['Select heating mode using the left knob.','Set temperature using the right knob.','Interior light turns on automatically while operating.']],
+      ['Dishwasher',['Insert tablet.','Select ECO mode.','Press START and close the door completely.']],
+      ['Waste & Recycling',['Two bins are located in the lower cabinet to the left of the sink.','The front bin is for general waste.','The rear bin is for recycling.']]
+    ]},
+    bathroom:{title:'Bathroom Basics',intro:'Everything you need for comfortable everyday bathroom use.',blocks:[
+      ['Bathroom Essentials',['Located inside the bathroom/WC vanity:','Toilet paper','Hand soap','Basic bathroom essentials','Hair dryer']],
+      ['Please Note',['Please do not dispose of paper or sanitary products in the toilet.','Please keep the bathroom window tilted open after shower use when possible.']]
+    ]},
+    laundry:{title:'Laundry',intro:'Laundry and washing machine instructions for everyday use.',blocks:[
+      ['Washing Machine',['Bosch Maxx WFL 851.']],
+      ['Before Starting',['Open the detergent drawer on the left side.','Laundry detergent is located inside the WC vanity.','Add detergent.','Load laundry and close the door firmly.']],
+      ['Select Program',['For everyday laundry, select 40° on the main program dial.','For sensitive / delicate clothes, use the 30° delicate program.','Recommended spin speed: 600–800 rpm.']],
+      ['Drying Rack & Ironing',['The drying rack and ironing equipment are located inside the office closet.']]
+    ]},
+    'safety-main':{title:'First Aid & Safety',intro:'Important safety information.',blocks:[
+      ['First Aid Kit',['A first aid kit is available inside the kitchen area.']],
+      ['Fire Safety',['Please avoid leaving candles or BBQ unattended.','Turn OFF electrical appliances when not in use.']],
+      ['Electrical Panel',['The electrical panel is located in the cabinet to the left of the main entrance.']]
+    ]},
+    emergency:{title:'Emergency Contacts',intro:'Important emergency numbers.',blocks:[
+      ['Villa Host',[{text:'Tony — +30 6983524100',href:'tel:+306983524100'}]],
+      ['Co‑Host / Manager',[{text:'Silia — +30 6951638967',href:'tel:+306951638967'}]],
+      ['Emergency Numbers',[{text:'Police: 100',href:'tel:100'},{text:'Ambulance: 166',href:'tel:166'},{text:'Fire Department: 199',href:'tel:199'},{text:'European Emergency Number: 112',href:'tel:112'}]]
+    ]},
+    shops:{title:'Supermarkets & Markets',intro:'Nearby shops within walking distance or short drive.',blocks:[
+      ['Supermarkets & Markets',[
+        {text:'AB Food Market — ~18–25′ walk (~5′ car)',href:maps('AB Food Market Lagonisi')},
+        {text:'My Market — ~25–30′ walk (~6–7′ car)',href:maps('My Market Lagonisi')},
+        {text:'Market‑In — ~20′ walk (~5′ car)',href:maps('Market In Lagonisi')},
+        {text:'European Mini Market — ~7′ walk',href:maps('European Mini Market Lagonisi')}
+      ]],
+      ['Butcher',[{text:'Makedonas Delicatessen — ~20′ walk (~5′ car)',href:maps('Makedonas Delicatessen Lagonisi')}]]
+    ]},
+    experience:{title:'Guest Experience Guide',intro:'Lagonisi – Guest Experience Guide.',blocks:[
+      ['Welcome',['Welcome to Eutopia Villa, a residence in the beautiful coastal area of Lagonisi, a southern part of the Athenian Riviera. Here’s a guide we hope to help you enjoy your time while being around, explore local gems & feel the authentic taste of traditional Greek cuisine & a relaxing lifestyle.']],
+      ['1. Sunset at Sounio (Signature Experience)',['One of the most beautiful sunset experiences in Greece.',{text:'Afternoon swim at Charakas Beach',href:maps('Charakas Beach')},{text:'Sunset at the Temple of Poseidon at Sounio',href:maps('Temple of Poseidon Sounio')},'Seafood dinner options after sunset:',{text:'Syrtaki – sea view, relaxed atmosphere, reliable quality',href:maps('Syrtaki Sounio')},{text:'Thodoros & Eleni – most authentic local tavern, traditional Greek seafood experience',href:maps('Thodoros and Eleni Sounio')},'Tip: Arrive 45–60 minutes before sunset for the best view.']],
+      ['2. Relax Beach Day',['A peaceful day by the sea with a more local vibe.',{text:'Morning & afternoon at Thymari Beach (quiet, natural, less crowded)',href:maps('Thymari Beach')},'Lunch nearby:',{text:'Traditional seafood tavernas in Palaia Fokaia',href:maps('Palaia Fokaia')},{text:'Galene restaurant recommended',href:maps('Galene Restaurant Palaia Fokaia')},'Fresh fish restaurants within a short drive.',{text:'Coffee or ice cream in Saronida',href:maps('Saronida')},'Relaxed seaside walk.']],
+      ['3. Riviera Exploration Day',['A scenic coastal experience along the Athenian Riviera.',{text:'Drive through Vouliagmeni / Kavouri',href:maps('Vouliagmeni Kavouri')},{text:'Swimming at Lake Vouliagmeni (natural thermal lake experience)',href:maps('Lake Vouliagmeni')},{text:'Coffee or seaside break in Vouliagmeni area',href:maps('Vouliagmeni')},{text:'Sunset at Lasithi Café Restaurant (Kavouri)',href:maps('Lasithi Cafe Restaurant Kavouri')},{text:'Optional shopping & walking in Glyfada',href:maps('Glyfada Athens')},{text:'Sardelaki (seafood)',href:maps('Sardelaki Glyfada')},{text:'Barbounaki (seafood)',href:maps('Barbounaki Glyfada')},{text:'Pasifae (Cretan cuisine)',href:maps('Pasifae Glyfada')}]],
+      ['4. Relaxing Villa Day (Stay & Enjoy)',['A slow, peaceful day to enjoy the villa, the pool, and the surroundings.','Relax by the swimming pool.','Easy meals at the villa (delivery or takeaway):',{text:'AKITCHEN',href:maps('AKITCHEN Lagonisi')},{text:'Piatza Kalamaki – casual Greek food, souvlaki & quick meals',href:maps('Piatza Kalamaki Lagonisi')},{text:'Pita Lagonisi – local gyros',href:maps('Pita Lagonisi')},{text:'Magginas Dairy Shop – traditional dairy products, ice cream & sweets',href:maps('Magginas Dairy Shop Lagonisi')},{text:'Coffee Island',href:maps('Coffee Island Lagonisi')},{text:'Coffee Berry',href:maps('Coffee Berry Lagonisi')},{text:'Dining in Kyra Popi – fresh seafood, traditional Greek tavern',href:maps('Kyra Popi Lagonisi')}]],
+      ['Sunset Coastal Walk (Local Experience)',[{text:'Walk along the seaside path between Lagonisi and Saronida',href:maps('Lagonisi Saronida seaside path')},'Small coves and sea stops along the way.','One of the best local sunset experiences without driving.','I’d definitely recommend enjoying a sunset picnic by the coast.']],
+      ['Local Tips',['A car is highly recommended.','The coastal road is one of the most beautiful drives in Attica.','Hidden beaches and coves are often the most beautiful spots.','Reserve a table in advance.']],
+      ['Thank You',['Thank you for choosing our place to spend your vacations. We hope you enjoy your stay, create beautiful memories to cherish for the years to come & let the summer vibes embrace you with peaceful sunset views by the pool or by the sea.']]
+    ]},
+    'house-rules':{title:'House Rules',intro:'Please help us maintain a peaceful, safe and enjoyable environment for everyone.',blocks:[
+      ['Quiet Hours',['15:00–17:30 & 23:00–07:00.']],
+      ['Smoking',['Smoking is allowed only in outdoor areas.']],
+      ['Pool',['Use the pool at your own risk.','Please do not run around the pool area.','Diving is not allowed.']],
+      ['BBQ & Garden',['Do not use the BBQ during strong winds due to fire risk.','Please keep the water hose nearby and ready for use.','Clean after use.']],
+      ['Visitors & Events',['Visitors not included in the booking are not allowed.','No parties or events allowed.','Maximum number of guests: 6 persons.']],
+      ['Important Notice',['⚠️ Any violation of the above rules may result in immediate cancellation of the booking and charges for damages.']]
+    ]}
+  };
+
+  window.openAboutVilla = function(){
+    currentCategory = null;
+    byId('detTitle').textContent = 'About Villa';
+    byId('detIntro').textContent = '';
+    byId('detBlocks').innerHTML = '<div style="border-radius:18px;overflow:hidden;border:1px solid #eadfd1;margin-bottom:14px"><iframe src="https://maps.google.com/maps?q=Ieras+Monis+Arkadiou+110&output=embed" width="100%" height="320" style="border:0;display:block" allowfullscreen loading="lazy"></iframe></div><article class="info-card"><h3>Address</h3><ul><li><a href="https://maps.google.com/?q=Ieras+Monis+Arkadiou+110" target="_blank" rel="noopener">Ieras Monis Arkadiou 110</a></li></ul></article>';
+    show('detail');
+  };
+  window.goHome = function(){ currentCategory=null; show('home'); };
+  window.openCategory = function(id){
+    if(id === 'rules'){ window.openDetail('house-rules','home'); return; }
+    var c = categories[id]; currentCategory = id;
+    byId('catTitle').textContent = c.title;
+    byId('catIntro').textContent = c.intro;
+    var html = '';
+    for(var i=0;i<c.items.length;i++){
+      var it=c.items[i];
+      html += '<button type="button" class="list-card" onclick="openDetail(\''+it[0]+'\')"><div class="list-icon">'+it[1]+'</div><div><h2>'+safe(it[2])+'</h2><p>'+safe(it[3])+'</p></div><div class="list-arrow">›</div></button>';
+    }
+    byId('catList').innerHTML = html;
+    show('category');
+  };
+  window.backToCat = function(){ currentCategory ? window.openCategory(currentCategory) : window.goHome(); };
+  window.openDetail = function(id, from){
+    if(from === 'home'){ currentCategory = null; }
+    var d = details[id];
+    byId('detTitle').textContent = d.title;
+    byId('detIntro').textContent = d.intro;
+    var html = '';
+    for(var i=0;i<d.blocks.length;i++){
+      var b=d.blocks[i];
+      html += '<article class="info-card"><h3>'+safe(b[0])+'</h3><ul>';
+      for(var j=0;j<b[1].length;j++){ html += '<li>'+linkItem(b[1][j])+'</li>'; }
+      html += '</ul></article>';
+    }
+    byId('detBlocks').innerHTML = html;
+    show('detail');
+  };
+})();
+</script>
+
+</body></html>
