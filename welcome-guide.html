@@ -28,8 +28,8 @@ a{touch-action:manipulation}
 <button type="button" class="card" onclick="openCategory('local')"><div class="icon">⌖</div><h2>Local Guide</h2><p>Nearby shops, restaurants & experiences</p><div class="arrow">›</div></button>
 <button type="button" class="card" onclick="openDetail('house-rules','home')"><div class="icon">☰</div><h2>House Rules</h2><p>Rules, guest guide & before checkout</p><div class="arrow">›</div></button>
 </div></div></main></div>
-<div id="category" class="screen"><header class="topbar"><button type="button" class="back" type="button" onclick="goHome()">‹</button><h1 id="catTitle"></h1><button type="button" class="heart" type="button">♡</button></header><main class="page"><p id="catIntro" class="intro"></p><div id="catList"></div><button type="button" class="gold-btn" type="button" onclick="goHome()">⌂ Back to Home</button></main></div>
-<div id="detail" class="screen"><header class="topbar"><button type="button" class="back" type="button" onclick="backToCat()">‹</button><h1 id="detTitle"></h1><button type="button" class="heart" type="button">♡</button></header><main class="page"><p id="detIntro" class="intro"></p><div id="detBlocks"></div><button type="button" class="gold-btn" type="button" onclick="backToCat()">⌂ Back</button></main></div>
+<div id="category" class="screen"><header class="topbar"><button type="button" class="back" type="button" onclick="goHome()">‹</button><h1 id="catTitle"></h1></header><main class="page"><p id="catIntro" class="intro"></p><div id="catList"></div><button type="button" class="gold-btn" type="button" onclick="goHome()">⌂ Back to Home</button></main></div>
+<div id="detail" class="screen"><header class="topbar"><button type="button" class="back" type="button" onclick="backToCat()">‹</button><h1 id="detTitle"></h1></header><main class="page"><p id="detIntro" class="intro"></p><div id="detBlocks"></div><button type="button" class="gold-btn" type="button" onclick="backToCat()">⌂ Back</button></main></div>
 <nav class="bottom"><div class="bottom-inner"><button type="button" class="nav active" type="button" onclick="goHome()">⌂<br>Home</button><button type="button" class="nav" onclick="openAboutVilla()">ⓘ<br>About Villa</button></div></nav>
 <script>
 (function(){
@@ -87,7 +87,7 @@ a{touch-action:manipulation}
   function maps(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
 
   var details = {
-    wifi:{title:'Wi‑Fi',intro:'Stay connected during your stay.',blocks:[['Network',['[Add Wi‑Fi network name]']],['Password',['[Add Wi‑Fi password]']]]},
+    wifi:{title:'Wi‑Fi',intro:'Stay connected during your stay.',blocks:[['Network',['EUTOPIA']],['Password',['Eutopia110']]]},
     entry:{title:'Entry & Access',intro:'Everything you need for entering and using the villa comfortably.',blocks:[
       ['Main Entrance',['Use the card or alternatively the key.']],
       ['Garage Doors',['Press A or B on the control according to the letters shown on the garage doors.']],
@@ -95,15 +95,14 @@ a{touch-action:manipulation}
     ]},
     contacts:{title:'Contacts',intro:'Important contacts for a worry-free stay.',blocks:[
       ['Villa Host',[{text:'Tony — +30 6983524100',href:'tel:+306983524100'}]],
-      ['Co‑Host / Manager',[{text:'Silia — +30 6951638967',href:'tel:+306951638967'}]],
-      ['Emergency',[{text:'European Emergency Number: 112',href:'tel:112'}]]
+      ['Co‑Host / Manager',[{text:'Silia — +30 6951638967',href:'tel:+306951638967'}]]
     ]},
     garage:{title:'Garage Doors',intro:'How to use the garage doors.',blocks:[['Garage Doors',['Press A or B on the control according to the letters shown on the garage doors.']]]},
     lights:{title:'Lights',intro:'Indoor and outdoor lighting instructions for a comfortable stay.',blocks:[
       ['Main Living Area',['The main lighting switches are located next to the villa entrance.','Additional ambient lighting is controlled from the living room side panels.']],
       ['Ceiling LED',['The ceiling LED supports dimming with the remote control.']],
-      ['Garden & Pool Lights',['All garden and pool lights turn ON and OFF automatically.']],
-      ['Manual Garden / Pool Control',['If manual control is needed, the switch is the third one below the switch panel located to the left of the guest WC on the ground floor.']],
+      ['Garden Lights',['All garden lights turn ON and OFF automatically.','If manual control is needed, the switch is the third one below the switch panel located to the left of the guest WC on the ground floor.']],
+      ['Pool Lights',['Pool lights are controlled from the remote control,Everytime you switch on/off the colour is changed']],
       ['Terrace LED & Exterior Spotlights',['Terrace LED lights and exterior house spotlights are controlled from the same switch panel, located in the dining room, to the right of the entrance.']]
     ]},
     tv:{title:'Smart TV & Music',intro:'Watch TV, stream your favorite apps and enjoy music throughout your stay.',blocks:[
@@ -123,10 +122,10 @@ a{touch-action:manipulation}
       ['Energy Saving',['Please keep doors and windows closed while the AC is operating.','Turn OFF AC units when leaving the villa.']]
     ]},
     kitchen:{title:'Kitchen Essentials',intro:'Everything you need for cooking, coffee and everyday kitchen use.',blocks:[
-      ['Coffee & Tea',['Fill the water tank from the top.','Insert capsule and close the handle firmly.','Press the small or large cup button.']],
+      ['Coffee',['Fill the water tank from the top.','Insert capsule and close the handle firmly.','Press the button power behind small or large cup buttons.','Press the small or large cup button.']],
       ['Stove',['Touch controls are located at the front center.','Press ON before selecting a cooking zone.','Adjust heat using + / − controls.','BOOST activates the outer ring on the front-right cooking zone.']],
       ['Oven',['Select heating mode using the left knob.','Set temperature using the right knob.','Interior light turns on automatically while operating.']],
-      ['Dishwasher',['Insert tablet.','Select ECO mode.','Press START and close the door completely.']],
+      ['Dishwasher',['Insert tablet (you will find the tablets in the cabinet under the sink).','Press power','Select ECO mode.','Press START and close the door completely.']],
       ['Waste & Recycling',['Two bins are located in the lower cabinet to the left of the sink.','The front bin is for general waste.','The rear bin is for recycling.']]
     ]},
     bathroom:{title:'Bathroom Basics',intro:'Everything you need for comfortable everyday bathroom use.',blocks:[
@@ -134,19 +133,17 @@ a{touch-action:manipulation}
       ['Please Note',['Please do not dispose of paper or sanitary products in the toilet.','Please keep the bathroom window tilted open after shower use when possible.']]
     ]},
     laundry:{title:'Laundry',intro:'Laundry and washing machine instructions for everyday use.',blocks:[
-      ['Washing Machine',['Bosch Maxx WFL 851.']],
       ['Before Starting',['Open the detergent drawer on the left side.','Laundry detergent is located inside the WC vanity.','Add detergent.','Load laundry and close the door firmly.']],
       ['Select Program',['For everyday laundry, select 40° on the main program dial.','For sensitive / delicate clothes, use the 30° delicate program.','Recommended spin speed: 600–800 rpm.']],
       ['Drying Rack & Ironing',['The drying rack and ironing equipment are located inside the office closet.']]
     ]},
     'safety-main':{title:'First Aid & Safety',intro:'Important safety information.',blocks:[
-      ['First Aid Kit',['A first aid kit is available inside the kitchen area.']],
+      ['First Aid Kit',['A first aid kit is available in the second drawer below the stovetop. You will also find painkillers there']],
+      ['Fire extinguisher',['The fire extinguisher is located next to the staircase. There is also a second fire extinguisher (liquid in a glass bottle) in the cabinet above the stovetop.']],
       ['Fire Safety',['Please avoid leaving candles or BBQ unattended.','Turn OFF electrical appliances when not in use.']],
       ['Electrical Panel',['The electrical panel is located in the cabinet to the left of the main entrance.']]
     ]},
     emergency:{title:'Emergency Contacts',intro:'Important emergency numbers.',blocks:[
-      ['Villa Host',[{text:'Tony — +30 6983524100',href:'tel:+306983524100'}]],
-      ['Co‑Host / Manager',[{text:'Silia — +30 6951638967',href:'tel:+306951638967'}]],
       ['Emergency Numbers',[{text:'Police: 100',href:'tel:100'},{text:'Ambulance: 166',href:'tel:166'},{text:'Fire Department: 199',href:'tel:199'},{text:'European Emergency Number: 112',href:'tel:112'}]]
     ]},
     shops:{title:'Supermarkets & Markets',intro:'Nearby shops within walking distance or short drive.',blocks:[
