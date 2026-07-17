@@ -1,7 +1,8 @@
-// Pricing: Google Calendar public iCal URL.
-// In Google Calendar: Settings → your calendar → "Public address in iCal format"
-// Add all-day events with just the nightly rate as the title, e.g. "280"
-const PRICING_FEED = 'YOUR_GOOGLE_CALENDAR_ICAL_URL';
+// Pricing comes from a published Google Sheet CSV.
+// Required columns: start_date, end_date, price
+// Optional column: label
+const PRICING_SHEET_CSV =
+    'https://docs.google.com/spreadsheets/d/1d7b648X7TgWxJjZ8_pUTDaJjzSl7BiX30auv2VBZTZs/export?format=csv&gid=1168549662';
 
 const DEFAULT_RATE = 200;
 const MIN_NIGHTS = 3;
@@ -124,38 +125,121 @@ async function loadAvailability() {
     }
 }
 
-// Pricing comes from Google Calendar via CORS proxy (optional)
+// Pricing comes from the published Google Sheet CSV.
 async function loadPricing() {
-    if (PRICING_FEED === 'YOUR_GOOGLE_CALENDAR_ICAL_URL') return;
-    for (const proxy of PROXIES) {
-        try {
-            const r = await fetch(proxy + encodeURIComponent(PRICING_FEED + '&nocache=' + Date.now()));
-            if (!r.ok) continue;
-            const text = await r.text();
-            if (text && text.length > 100) { parsePricing(text); return; }
-        } catch {}
+    const csv = await fetchRemoteText(PRICING_SHEET_CSV);
+    if (!csv) {
+        console.warn('Could not load Google Sheet pricing — using default rate');
+        return;
     }
-    console.warn('Could not load pricing calendar — using default rate');
+
+    parsePricingSheet(csv);
 }
 
-function parsePricing(ics) {
-    ics.split('BEGIN:VEVENT').slice(1).forEach(chunk => {
-        const sM = chunk.match(/DTSTART(?:;VALUE=DATE)?:(\d{8})/);
-        const eM = chunk.match(/DTEND(?:;VALUE=DATE)?:(\d{8})/);
-        const priceM = chunk.match(/SUMMARY:(\d+)/);
-        if (!sM || !eM || !priceM) return;
-        const price = parseInt(priceM[1]);
-        let curr = toUTC(sM[1]);
-        const stop = toUTC(eM[1]);
-        while (curr < stop) {
-            dayPrices[dateKey(curr.getUTCFullYear(), curr.getUTCMonth(), curr.getUTCDate())] = price;
-            curr.setUTCDate(curr.getUTCDate() + 1);
+async function fetchRemoteText(url) {
+    try {
+        const direct = await fetch(`${url}&nocache=${Date.now()}`);
+        if (direct.ok) {
+            const text = await direct.text();
+            if (text && text.length > 0) return text;
+        }
+    } catch {}
+
+    return fetchProxy(url);
+}
+
+function parsePricingSheet(csv) {
+    const rows = parseCsv(csv);
+    if (rows.length < 2) return;
+
+    const headers = rows[0].map(cell => cell.trim().toLowerCase());
+    const startIndex = headers.indexOf('start_date');
+    const endIndex = headers.indexOf('end_date');
+    const priceIndex = headers.indexOf('price');
+
+    if (startIndex === -1 || endIndex === -1 || priceIndex === -1) {
+        console.warn('Pricing sheet is missing one of: start_date, end_date, price');
+        return;
+    }
+
+    rows.slice(1).forEach((row, index) => {
+        const startValue = row[startIndex]?.trim();
+        const endValue = row[endIndex]?.trim();
+        const priceValue = row[priceIndex]?.trim();
+
+        if (!startValue && !endValue && !priceValue) return;
+
+        const start = parseIsoDate(startValue);
+        const end = parseIsoDate(endValue);
+        const price = Number(priceValue);
+
+        if (!start || !end || start > end || !Number.isFinite(price) || price <= 0) {
+            console.warn(`Skipping invalid pricing row ${index + 2}`, row);
+            return;
+        }
+
+        const cursor = new Date(start);
+        while (cursor <= end) {
+            dayPrices[dateKey(cursor.getUTCFullYear(), cursor.getUTCMonth(), cursor.getUTCDate())] = Math.round(price);
+            cursor.setUTCDate(cursor.getUTCDate() + 1);
         }
     });
 }
 
 function toUTC(s) {
     return new Date(Date.UTC(+s.slice(0,4), +s.slice(4,6)-1, +s.slice(6,8)));
+}
+
+function parseIsoDate(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || '');
+    if (!match) return null;
+    return new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+}
+
+function parseCsv(csv) {
+    const rows = [];
+    let row = [];
+    let cell = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < csv.length; i++) {
+        const char = csv[i];
+        const next = csv[i + 1];
+
+        if (char === '"') {
+            if (inQuotes && next === '"') {
+                cell += '"';
+                i += 1;
+            } else {
+                inQuotes = !inQuotes;
+            }
+            continue;
+        }
+
+        if (char === ',' && !inQuotes) {
+            row.push(cell);
+            cell = '';
+            continue;
+        }
+
+        if ((char === '\n' || char === '\r') && !inQuotes) {
+            if (char === '\r' && next === '\n') i += 1;
+            row.push(cell);
+            rows.push(row);
+            row = [];
+            cell = '';
+            continue;
+        }
+
+        cell += char;
+    }
+
+    if (cell.length > 0 || row.length > 0) {
+        row.push(cell);
+        rows.push(row);
+    }
+
+    return rows;
 }
 
 function timeSince(date) {
