@@ -1,8 +1,12 @@
-// Pricing comes from a published Google Sheet CSV.
+// Pricing comes from a public Google Sheet.
 // Required columns: start_date, end_date, price
 // Optional column: label
-const PRICING_SHEET_CSV =
-    'https://docs.google.com/spreadsheets/d/1d7b648X7TgWxJjZ8_pUTDaJjzSl7BiX30auv2VBZTZs/export?format=csv&gid=1168549662';
+const PRICING_SHEET_ID = '1d7b648X7TgWxJjZ8_pUTDaJjzSl7BiX30auv2VBZTZs';
+const PRICING_SHEET_GID = '1168549662';
+const PRICING_SHEET_ENDPOINTS = [
+    `https://docs.google.com/spreadsheets/d/${PRICING_SHEET_ID}/gviz/tq?tqx=out:json&gid=${PRICING_SHEET_GID}`,
+    `https://docs.google.com/spreadsheets/d/${PRICING_SHEET_ID}/export?format=csv&gid=${PRICING_SHEET_GID}`,
+];
 
 const DEFAULT_RATE = 200;
 const MIN_NIGHTS = 3;
@@ -125,15 +129,17 @@ async function loadAvailability() {
     }
 }
 
-// Pricing comes from the published Google Sheet CSV.
+// Pricing comes from the public Google Sheet.
 async function loadPricing() {
-    const csv = await fetchRemoteText(PRICING_SHEET_CSV);
-    if (!csv) {
-        console.warn('Could not load Google Sheet pricing — using default rate');
-        return;
+    for (const endpoint of PRICING_SHEET_ENDPOINTS) {
+        const text = await fetchRemoteText(endpoint);
+        if (!text) continue;
+
+        if (parsePricingSheetJson(text)) return;
+        if (parsePricingSheetCsv(text)) return;
     }
 
-    parsePricingSheet(csv);
+    console.warn('Could not load Google Sheet pricing — using default rate');
 }
 
 async function fetchRemoteText(url) {
@@ -148,9 +154,35 @@ async function fetchRemoteText(url) {
     return fetchProxy(url);
 }
 
-function parsePricingSheet(csv) {
+function parsePricingSheetJson(payload) {
+    const match = payload.match(/setResponse\(([\s\S]+)\);?$/);
+    if (!match) return false;
+
+    try {
+        const data = JSON.parse(match[1]);
+        const table = data?.table;
+        const columns = Array.isArray(table?.cols) ? table.cols : [];
+        const rows = Array.isArray(table?.rows) ? table.rows : [];
+        if (columns.length === 0 || rows.length === 0) return false;
+
+        const normalizedRows = [
+            columns.map(column => String(column.label || '').trim().toLowerCase()),
+            ...rows.map(row => (row.c || []).map(cell => cell?.v == null ? '' : String(cell.v))),
+        ];
+
+        return applyPricingRows(normalizedRows);
+    } catch {
+        return false;
+    }
+}
+
+function parsePricingSheetCsv(csv) {
     const rows = parseCsv(csv);
-    if (rows.length < 2) return;
+    return applyPricingRows(rows);
+}
+
+function applyPricingRows(rows) {
+    if (rows.length < 2) return false;
 
     const headers = rows[0].map(cell => cell.trim().toLowerCase());
     const startIndex = headers.indexOf('start_date');
@@ -158,10 +190,10 @@ function parsePricingSheet(csv) {
     const priceIndex = headers.indexOf('price');
 
     if (startIndex === -1 || endIndex === -1 || priceIndex === -1) {
-        console.warn('Pricing sheet is missing one of: start_date, end_date, price');
-        return;
+        return false;
     }
 
+    let applied = 0;
     rows.slice(1).forEach((row, index) => {
         const startValue = row[startIndex]?.trim();
         const endValue = row[endIndex]?.trim();
@@ -182,8 +214,11 @@ function parsePricingSheet(csv) {
         while (cursor <= end) {
             dayPrices[dateKey(cursor.getUTCFullYear(), cursor.getUTCMonth(), cursor.getUTCDate())] = Math.round(price);
             cursor.setUTCDate(cursor.getUTCDate() + 1);
+            applied += 1;
         }
     });
+
+    return applied > 0;
 }
 
 function toUTC(s) {
