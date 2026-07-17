@@ -15,7 +15,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 FEEDS = [
-    # TODO: replace with your actual iCal URLs from Airbnb and Booking.com
     'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
     'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08',
 ]
@@ -44,15 +43,20 @@ def parse_blocked(ics: str) -> set:
 
 
 all_blocked: set = set()
+successful_feeds = 0
 
 for url in FEEDS:
     try:
         ics = fetch(url)
         dates = parse_blocked(ics)
         all_blocked |= dates
+        successful_feeds += 1
         print(f'✓  {len(dates):>4} dates  {url[:60]}')
     except Exception as exc:
         print(f'✗  FAILED  {url[:60]}\n   {exc}')
+
+if successful_feeds == 0:
+    raise SystemExit('No availability feeds could be fetched; keeping existing data/availability.json unchanged.')
 
 output = {
     'updated': datetime.now(timezone.utc).isoformat(),

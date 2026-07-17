@@ -20,8 +20,16 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 function dateKey(y, m, d) { return `${y}-${m}-${d}`; }
 
 const AVAILABILITY_FEEDS = [
-    'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
-    'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08',
+    {
+        name: 'Airbnb',
+        statusId: 'airbnb-status',
+        url: 'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
+    },
+    {
+        name: 'Booking.com',
+        statusId: 'booking-status',
+        url: 'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08',
+    },
 ];
 
 function addBlocked(iso) {
@@ -58,9 +66,17 @@ async function fetchProxy(url) {
     return null;
 }
 
+function setSourceStatus(feed, message, className = 'source-status') {
+    const el = document.getElementById(feed.statusId);
+    if (!el) return;
+    el.className = className;
+    el.innerText = message;
+}
+
 // Availability: load cached JSON immediately, then try live fetch in background
 async function loadAvailability() {
     const status = document.getElementById('sync-status');
+    AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, 'Checking calendar...'));
 
     // 1. Load cached JSON (fast, same-origin, always works)
     let cachedAt = null;
@@ -75,25 +91,36 @@ async function loadAvailability() {
             } else {
                 status.innerHTML = `<span class="text-amber-500">⚠ Not yet synced — trigger the GitHub Action once</span>`;
             }
+            AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, 'Using cached sync', 'source-status text-amber-500'));
             drawCal();
         }
     } catch {}
 
     // 2. Try live fetch via CORS proxy in background — update if it works
-    const liveResults = await Promise.all(AVAILABILITY_FEEDS.map(fetchProxy));
-    const anyLive = liveResults.some(Boolean);
+    const liveResults = await Promise.all(AVAILABILITY_FEEDS.map(async feed => ({
+        feed,
+        ics: await fetchProxy(feed.url),
+    })));
+    const anyLive = liveResults.some(result => result.ics);
 
     if (anyLive) {
         bookedSet.clear();
-        liveResults.forEach(ics => {
-            if (ics) parseBlockedIcal(ics).forEach(addBlocked);
+        liveResults.forEach(result => {
+            if (result.ics) {
+                parseBlockedIcal(result.ics).forEach(addBlocked);
+                setSourceStatus(result.feed, 'Live availability loaded', 'source-status text-green-600');
+            } else {
+                setSourceStatus(result.feed, cachedAt ? 'Using cached sync' : 'Could not load feed', cachedAt ? 'source-status text-amber-500' : 'source-status text-red-500');
+            }
         });
         status.innerHTML = `<span class="text-green-600">✓ Live availability loaded</span>`;
         drawCal();
     } else if (cachedAt) {
         status.innerHTML = `<span class="text-green-600">✓ Availability synced ${timeSince(cachedAt)}</span>`;
+        AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, `Cached ${timeSince(cachedAt)}`, 'source-status text-green-600'));
     } else {
         status.innerHTML = `<span class="text-red-500">✗ Could not load availability — please refresh</span>`;
+        AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, 'Could not load feed', 'source-status text-red-500'));
     }
 }
 
