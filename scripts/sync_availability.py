@@ -6,6 +6,7 @@ Run by the GitHub Action every 4 hours — no CORS proxy needed server-side.
 To update the iCal URLs:
   Airbnb:      Listing → Calendar → Availability settings → Export calendar
   Booking.com: Extranet → Calendar → iCal → Export
+  Vrbo:        Calendar → Import/Export → Export calendar
 """
 
 import json
@@ -17,6 +18,7 @@ from pathlib import Path
 FEEDS = [
     'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
     'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08',
+    'https://www.vrbo.com/icalendar/95ea8d677bdb47dfaca5bd0f04d5c1b4.ics?nonTentative',
 ]
 
 

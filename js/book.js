@@ -35,6 +35,11 @@ const AVAILABILITY_FEEDS = [
         statusId: 'booking-status',
         url: 'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08',
     },
+    {
+        name: 'Vrbo',
+        statusId: 'vrbo-status',
+        url: 'https://www.vrbo.com/icalendar/95ea8d677bdb47dfaca5bd0f04d5c1b4.ics?nonTentative',
+    },
 ];
 
 function addBlocked(iso) {
