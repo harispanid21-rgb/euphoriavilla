@@ -28,40 +28,20 @@ const AVAILABILITY_FEEDS = [
     {
         name: 'Airbnb',
         statusId: 'airbnb-status',
-        url: 'https://www.airbnb.co.uk/calendar/ical/1660620875880657269.ics?t=565a1786098f4c759644d9008e8022c1',
     },
     {
         name: 'Booking.com',
         statusId: 'booking-status',
-        url: 'https://ical.booking.com/v1/export?t=48dd88ab-ac97-4f0c-a00f-5e9e2882ca08',
     },
     {
         name: 'Vrbo',
         statusId: 'vrbo-status',
-        url: 'https://www.vrbo.com/icalendar/95ea8d677bdb47dfaca5bd0f04d5c1b4.ics?nonTentative',
     },
 ];
 
 function addBlocked(iso) {
     const [y, m, d] = iso.split('-').map(Number);
     bookedSet.add(dateKey(y, m - 1, d));
-}
-
-function parseBlockedIcal(ics) {
-    const dates = [];
-    ics.split('BEGIN:VEVENT').slice(1).forEach(chunk => {
-        const sM = chunk.match(/DTSTART(?:;VALUE=DATE)?(?:;TZID=[^:]+)?:(\d{8})/);
-        const eM = chunk.match(/DTEND(?:;VALUE=DATE)?(?:;TZID=[^:]+)?:(\d{8})/);
-        if (!sM || !eM) return;
-        let curr = toUTC(sM[1]);
-        const stop = toUTC(eM[1]);
-        while (curr < stop) {
-            const y = curr.getUTCFullYear(), m = curr.getUTCMonth(), d = curr.getUTCDate();
-            dates.push(`${y}-${String(m + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
-            curr.setUTCDate(d + 1);
-        }
-    });
-    return dates;
 }
 
 async function fetchProxy(url) {
@@ -83,52 +63,29 @@ function setSourceStatus(feed, message, className = 'source-status') {
     el.innerText = message;
 }
 
-// Availability: load cached JSON immediately, then try live fetch in background
+// Availability: read the synced JSON (written by the GitHub Action, same-origin)
 async function loadAvailability() {
     const status = document.getElementById('sync-status');
     AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, 'Checking calendar...'));
 
-    // 1. Load cached JSON (fast, same-origin, always works)
-    let cachedAt = null;
     try {
         const r = await fetch(`data/availability.json?nocache=${Date.now()}`);
-        if (r.ok) {
-            const data = await r.json();
-            data.blocked.forEach(addBlocked);
-            if (data.updated && data.updated !== '1970-01-01T00:00:00+00:00') {
-                cachedAt = new Date(data.updated);
-                status.innerHTML = `<span class="text-amber-500">↻ Checking live availability…</span>`;
-            } else {
-                status.innerHTML = `<span class="text-amber-500">⚠ Not yet synced — trigger the GitHub Action once</span>`;
-            }
-            AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, 'Using cached sync', 'source-status text-amber-500'));
-            drawCal();
-        }
-    } catch {}
-
-    // 2. Try live fetch via CORS proxy in background — update if it works
-    const liveResults = await Promise.all(AVAILABILITY_FEEDS.map(async feed => ({
-        feed,
-        ics: await fetchProxy(feed.url),
-    })));
-    const anyLive = liveResults.some(result => result.ics);
-
-    if (anyLive) {
-        bookedSet.clear();
-        liveResults.forEach(result => {
-            if (result.ics) {
-                parseBlockedIcal(result.ics).forEach(addBlocked);
-                setSourceStatus(result.feed, 'Live availability loaded', 'source-status text-green-600');
-            } else {
-                setSourceStatus(result.feed, cachedAt ? 'Using cached sync' : 'Could not load feed', cachedAt ? 'source-status text-amber-500' : 'source-status text-red-500');
-            }
-        });
-        status.innerHTML = `<span class="text-green-600">✓ Live availability loaded</span>`;
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        data.blocked.forEach(addBlocked);
         drawCal();
-    } else if (cachedAt) {
-        status.innerHTML = `<span class="text-green-600">✓ Availability synced ${timeSince(cachedAt)}</span>`;
-        AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, `Cached ${timeSince(cachedAt)}`, 'source-status text-green-600'));
-    } else {
+
+        const synced = data.updated && data.updated !== '1970-01-01T00:00:00+00:00'
+            ? new Date(data.updated) : null;
+        if (synced) {
+            status.innerHTML = `<span class="text-green-600">✓ Availability synced ${timeSince(synced)}</span>`;
+            AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, `Synced ${timeSince(synced)}`, 'source-status text-green-600'));
+        } else {
+            status.innerHTML = `<span class="text-amber-500">⚠ Not yet synced — trigger the GitHub Action once</span>`;
+            AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, 'Not yet synced', 'source-status text-amber-500'));
+        }
+    } catch (err) {
+        console.warn('Could not load availability.json', err);
         status.innerHTML = `<span class="text-red-500">✗ Could not load availability — please refresh</span>`;
         AVAILABILITY_FEEDS.forEach(feed => setSourceStatus(feed, 'Could not load feed', 'source-status text-red-500'));
     }
@@ -224,10 +181,6 @@ function applyPricingRows(rows) {
     });
 
     return applied > 0;
-}
-
-function toUTC(s) {
-    return new Date(Date.UTC(+s.slice(0,4), +s.slice(4,6)-1, +s.slice(6,8)));
 }
 
 function parseIsoDate(value) {
