@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /booktest.html
 
-Sitemap: https://eutopiavilla.gr/sitemap.xml
+Sitemap: https://www.eutopiavilla.gr/sitemap.xml
